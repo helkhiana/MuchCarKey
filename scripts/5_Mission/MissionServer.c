@@ -15,7 +15,7 @@ modded class MissionServer
         g_Game.SetMCKConfig(m_Config);
     }
 
-    void GetMCKServerConfig(CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target)
+    void GetMCKServerConfig(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
     {
         if (type == CallType.Server && sender != null)                    
             GetRPCManager().SendRPC("Config", "ClientStoreMCKConfig", new Param1<ref MCK_Config>( m_Config ), true, sender);

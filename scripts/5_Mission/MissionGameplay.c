@@ -6,9 +6,9 @@ modded class MissionGameplay
 		GetRPCManager().SendRPC("Config", "GetMCKServerConfig", null, true, null);
 	}
 
-	void ClientStoreMCKConfig(CallType type, ref ParamsReadContext ctx, ref PlayerIdentity sender, ref Object target)
+	void ClientStoreMCKConfig(CallType type, ParamsReadContext ctx, PlayerIdentity sender, Object target)
     {
-        ref Param1<ref MCK_Config> data;
+        Param1<ref MCK_Config> data;
         if (type == CallType.Client)
 		{
 			if (!ctx.Read(data)) return;

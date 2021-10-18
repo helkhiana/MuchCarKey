@@ -73,7 +73,7 @@ class MCKReport
 		SendMessageToClient(player, "Vehicle Report:");
 		SendMessageToClient(player, "Car key id: " + target.m_CarKeyId);
 		SendMessageToClient(player, "Car id: " + target.m_CarScriptId);
-		//SendMessageToClient(player, "Last time interacted: " + TimestampToString(target.m_LastInteractedWithUnixTime));
+		SendMessageToClient(player, "Last time interacted: " + TimestampToString(target.m_LastInteractedWithUnixTime));
 	}
 	
 	private static void SendMessageToClient(Object reciever, string message)

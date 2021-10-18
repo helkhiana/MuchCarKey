@@ -2,7 +2,7 @@ modded class DayZGame
 {
     private ref MCK_Config m_Config;
 
-    ref MCK_Config GetMCKConfig()
+    MCK_Config GetMCKConfig()
     {
         if (!m_Config)
         {

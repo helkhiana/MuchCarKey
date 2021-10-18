@@ -50,8 +50,8 @@ class ActionPickLockOnCar : ActionLockUnlockCar
 			if(!carScript)
 				return false;
 		}
-        
-        ref array<string> raidTools = g_Game.GetMCKConfig().Get_RaidTools();
+                
+        array<string> raidTools = g_Game.GetMCKConfig().Get_RaidTools();
         if(raidTools.Find(item.GetType()) == -1)
             return false;
 
