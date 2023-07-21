@@ -6,7 +6,7 @@ modded class CarScript
 	int m_CarScriptId = 0;
 	int m_LastInteractedWithUnixTime = -1;	
 	bool m_HadPlayerInteraction = false;
-	PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
+	PluginMCKLogs m_MCKLogger;
 
 	void CarScript()
 	{
@@ -14,6 +14,10 @@ modded class CarScript
 		RegisterNetSyncVariableBool("m_HasCKAssigned");
 		RegisterNetSyncVariableInt("m_CarKeyId", 0, int.MAX - 1);
 		RegisterNetSyncVariableInt("m_CarScriptId", 0, int.MAX - 1);
+		if(GetGame().IsServer())
+		{
+			m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
+		}
 	}
 
 	void ResetLifetime()

@@ -8,7 +8,6 @@ class ActionLockUnlockCarCB : ActionContinuousBaseCB
 
 class ActionLockUnlockCar: ActionContinuousBase
 {	
-	PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
 	void ActionLockUnlockCar()
 	{
 		m_CallbackClass = ActionLockUnlockCarCB;
