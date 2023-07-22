@@ -66,8 +66,9 @@ class ActionAssignNewKey: ActionLockUnlockCar
 
                 carScript.m_CarKeyId = mck_id;
                 carScript.m_HasCKAssigned = true;
+				carScript.m_OriginalOwner = player.GetIdentity().GetName();
 				carScript.SynchronizeValues(); 
-				carScript.ResetLifetime();
+				carScript.ResetLifetime();				
 				
 				PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
 				m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") assigned new owner and key (ID: " + mck_id + " ) to vehicle " + carScript.GetDisplayName() + " (" + carScript.m_CarScriptId + ")");

@@ -38,9 +38,6 @@ class ActionGetInfoKey: ActionLockUnlockCar
         MCK_InfoKey infoKey = MCK_InfoKey.Cast(item);
 		if (carScript && infoKey)
 		{
-			if(!carScript.m_HasCKAssigned)
-				return false;
-
 			return true;            
 		}
 
@@ -60,24 +57,28 @@ class ActionGetInfoKey: ActionLockUnlockCar
 			MCK_InfoKey infoKey = MCK_InfoKey.Cast(action_data.m_MainItem);            
             if(infoKey)
             {          
-                MCKReport.DisplayReport(action_data.m_Player, carScript);
+                DisplayReport(action_data.m_Player, carScript);
             }
 		}
-	}    
-};
+	}
 
-class MCKReport
-{
-	static void DisplayReport(PlayerBase player, CarScript target)
+	void DisplayReport(PlayerBase player, CarScript target)
 	{
-		SendMessageToClient(player, "Vehicle Report:");
-		SendMessageToClient(player, "Car key id: " + target.m_CarKeyId);
-		SendMessageToClient(player, "Car id: " + target.m_CarScriptId);
-		SendMessageToClient(player, "Last time interacted: " + TimestampToString(target.m_LastInteractedWithUnixTime));
+		SendMCKMessageToClient(player, "Vehicle Report:");
+		SendMCKMessageToClient(player, "Vehicle: " + target);
+		SendMCKMessageToClient(player, "Vehicle key id: " + target.m_CarKeyId);
+		SendMCKMessageToClient(player, "Vehicle id: " + target.m_CarScriptId);
+		//SendMCKMessageToClient(player, "Vehicle original owner: " + target.m_OriginalOwner);
+		SendMCKMessageToClient(player, "Last time interacted: " + TimestampToString(target.m_LastInteractedWithUnixTime));
+		SendMCKMessageToClient(player, "Remaining lifetime: " + SecondsToDays(target.GetRemainingTimeTilDespawn()));
+		//SendMCKMessageToClient(player, "Max lifetime from types: " + SecondsToDays(target.GetLifetimeMax()));
 	}
 	
-	private static void SendMessageToClient(Object reciever, string message)
+	void SendMCKMessageToClient(Object reciever, string message)
 	{
+		//Printing to server too
+		PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
+		m_MCKLogger.LogMCKActivity(message);
 		PlayerBase man;
 		if (GetGame().IsServer() && Class.CastTo(man, reciever) && reciever.IsAlive() && message != "")
 		{

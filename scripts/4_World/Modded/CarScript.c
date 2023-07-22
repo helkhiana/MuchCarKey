@@ -6,14 +6,16 @@ modded class CarScript
 	int m_CarScriptId = 0;
 	int m_LastInteractedWithUnixTime = -1;	
 	bool m_HadPlayerInteraction = false;
+	string m_OriginalOwner = "No Owner";
+	private bool m_Initialised = false;
 	PluginMCKLogs m_MCKLogger;
 
 	void CarScript()
 	{
 		RegisterNetSyncVariableBool("m_IsCKLocked");
 		RegisterNetSyncVariableBool("m_HasCKAssigned");
-		RegisterNetSyncVariableInt("m_CarKeyId", 0, int.MAX - 1);
-		RegisterNetSyncVariableInt("m_CarScriptId", 0, int.MAX - 1);
+		RegisterNetSyncVariableInt("m_CarKeyId", int.MIN, int.MAX - 1);
+		RegisterNetSyncVariableInt("m_CarScriptId", int.MIN, int.MAX - 1);
 		if(GetGame().IsServer())
 		{
 			m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
@@ -22,32 +24,111 @@ modded class CarScript
 
 	void ResetLifetime()
 	{
-		m_LastInteractedWithUnixTime = JMDate.Now(false).GetTimestamp();
+		m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
 		m_HadPlayerInteraction = true;
+		SetMCKLifetime();
 	}
 	
 	override void OnEngineStart()
 	{
 		super.OnEngineStart();
-		m_LastInteractedWithUnixTime = JMDate.Now(false).GetTimestamp();
+		m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+		SetMCKLifetime();
+	}
+
+	override bool NameOverride(out string output)
+	{
+		if(m_OriginalOwner != "No Owner" && m_OriginalOwner != ""  )
+		{
+			//TODO: do RPC to sync for client
+			string DisplayName;		
+			GetGame().ObjectGetDisplayName(this, DisplayName);	
+			output = m_OriginalOwner + "'s " + DisplayName;
+			return true;
+		}
+		return super.NameOverride(output);
+	}
+
+	override void EEKilled(Object killer)
+	{
+		if (GetGame().IsServer())
+		{
+			if(!m_EngineDestroyed)
+			{
+				PlayerBase player = PlayerBase.Cast(killer);
+				string killerString = "";
+				if(player)
+				{
+					killerString = player.GetIdentity().GetName() + " steam64id=" + player.GetIdentity().GetPlainId();
+				}
+				else
+				{
+					EntityAI entity = EntityAI.Cast(killer);
+					if(entity && entity.GetHierarchyRootPlayer())
+					{
+						player = PlayerBase.Cast(entity.GetHierarchyRootPlayer());
+						killerString = player.GetIdentity().GetName() + " steam64id=" + player.GetIdentity().GetPlainId() + " with " + entity.ToString();
+					}
+					else
+					{
+						killerString = entity.ToString();
+					}
+				}
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") " + " has been destroyed by: " + killerString);
+			}
+		}
+		super.EEKilled(killer);
 	}
 
 	override void EEDelete(EntityAI parent)
 	{
 		super.EEDelete(parent);
 		if (GetGame().IsServer())
+		{
 			m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") " + " is being deleted.");
+			if(GetLifetime() <= 0)
+			{
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") Remaining DB lifetime: " + SecondsToDays(this.GetLifetime()) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+			}
+		}
 	}
 
 	override void EEInit()
 	{
 		super.EEInit();
 		if (!GetGame().IsServer())
+			return;			
+			
+		if(!m_Initialised)
+		{
+			GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).CallLater(this.DelayedInit, 3000, false);
+		}
+	}
+
+	void DelayedInit()
+	{		
+		GetGame().GetCallQueue(CALL_CATEGORY_SYSTEM).Remove(this.DelayedInit);
+		if(m_Initialised)
+		{
 			return;
+		}			
+		SetMCKLifetime();
 		if (m_CarScriptId == 0)
-			m_CarScriptId = Math.RandomIntInclusive(1, int.MAX - 1);
-		m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") initialized.");
+		{
+			//m_CarScriptId = Math.RandomIntInclusive(1, int.MAX - 1);
+			string thisObjectInstance = this.ToString();
+			m_CarScriptId = thisObjectInstance.Hash();
+			m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+		}
+		m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") initialized." + " Remaining lifetime: " + SecondsToDays(GetRemainingTimeTilDespawn()));
 		SynchronizeValues();
+		m_Initialised = true;
+	}
+
+	override void AfterStoreLoad()
+	{	
+		super.AfterStoreLoad();	
+		DelayedInit();
 	}
 
 	override void OnStoreSave(ParamsWriteContext ctx)
@@ -58,6 +139,7 @@ modded class CarScript
 		ctx.Write(mck_CarScriptData);
 		ctx.Write(m_LastInteractedWithUnixTime);
 		ctx.Write(m_HadPlayerInteraction);
+		//ctx.Write(m_OriginalOwner);
 	}
 
 	override bool OnStoreLoad(ParamsReadContext ctx, int version)
@@ -65,6 +147,7 @@ modded class CarScript
 		if (!super.OnStoreLoad(ctx, version))
 			return false;
 
+		
 		Param4<bool, bool, int, int> mck_CarScriptData = new Param4<bool, bool, int, int>(false, false, 0, 0);
 		if (ctx.Read(mck_CarScriptData))
 		{
@@ -75,41 +158,73 @@ modded class CarScript
 		}
 
 		if (!ctx.Read(m_LastInteractedWithUnixTime))
-			m_LastInteractedWithUnixTime = JMDate.Now(false).GetTimestamp();
+			m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
 		if (!ctx.Read(m_HadPlayerInteraction))
 			m_HadPlayerInteraction = false;
+		// if (!ctx.Read(m_OriginalOwner))
+		// 	m_OriginalOwner = "No Owner";
 
 		SynchronizeValues();
 
 		return true;
 	}
 	
+	override void EEOnCECreate()
+	{
+		super.EEOnCECreate();		
+		DelayedInit();		
+	}
+
 	override void OnCEUpdate()
 	{
 		super.OnCEUpdate();
-		if(m_LastInteractedWithUnixTime == -1)
-		{
-			m_LastInteractedWithUnixTime = JMDate.Now(false).GetTimestamp();
-			m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") interaction timestamp was -1. it is now: " + TimestampToString(m_LastInteractedWithUnixTime));
-		}
-
 		HandleLifetime();		
+	}
+
+	void SetMCKLifetime()
+	{		
+		if(g_Game.GetMCKConfig().IsLifetimeMaintenanceEnabled())
+		{			
+			this.SetLifetime(g_Game.GetMCKConfig().Get_MaxLifetime());
+		};
+	}
+
+	int GetElapsedTimeSinceInteraction()
+	{
+		return CF_Date.Now(false).GetTimestamp() - m_LastInteractedWithUnixTime;
+	}
+
+	int GetRemainingTimeTilDespawn()
+	{
+		if(g_Game.GetMCKConfig().IsLifetimeMaintenanceEnabled())
+		{
+			int remainingTime = g_Game.GetMCKConfig().Get_MaxLifetimeWithoutAnyPlayerInteraction();
+			if(m_HadPlayerInteraction)
+			{
+				remainingTime = g_Game.GetMCKConfig().Get_MaxLifetime();
+			}
+			remainingTime = remainingTime - GetElapsedTimeSinceInteraction();
+			return remainingTime;
+		}
+		return GetLifetime();
 	}
 
 	void HandleLifetime()
 	{
-		int deltaInSeconds = JMDate.Now(false).GetTimestamp() - m_LastInteractedWithUnixTime;
+		int deltaInSeconds = GetElapsedTimeSinceInteraction();
 		if(g_Game.GetMCKConfig().IsLifetimeMaintenanceEnabled())
 		{
 			if(deltaInSeconds > g_Game.GetMCKConfig().Get_MaxLifetime())
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") deltaInSeconds was " + deltaInSeconds + " . Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
 				Delete();
+				return;
 			}
 			if(deltaInSeconds > g_Game.GetMCKConfig().Get_MaxLifetimeWithoutAnyPlayerInteraction() && !m_HadPlayerInteraction)
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") deltaInSeconds was " + deltaInSeconds + " . Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
 				Delete();
+				return;
 			}
 		}
 	}
