@@ -24,7 +24,7 @@ modded class CarScript
 
 	void ResetLifetime()
 	{
-		m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+		SetLastInteractedWithTimeToNow();
 		m_HadPlayerInteraction = true;
 		SetMCKLifetime();
 	}
@@ -32,7 +32,7 @@ modded class CarScript
 	override void OnEngineStart()
 	{
 		super.OnEngineStart();
-		m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+		SetLastInteractedWithTimeToNow();
 		SetMCKLifetime();
 	}
 
@@ -88,7 +88,7 @@ modded class CarScript
 			m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") " + " is being deleted.");
 			if(GetLifetime() <= 0)
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") Remaining DB lifetime: " + SecondsToDays(this.GetLifetime()) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") Remaining DB lifetime: " + SecondsToDays(this.GetLifetime()) + ". This happened due to lifetime from types running out.");
 			}
 		}
 	}
@@ -118,7 +118,7 @@ modded class CarScript
 			//m_CarScriptId = Math.RandomIntInclusive(1, int.MAX - 1);
 			string thisObjectInstance = this.ToString();
 			m_CarScriptId = thisObjectInstance.Hash();
-			m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+			SetLastInteractedWithTimeToNow();
 		}
 		m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + ") initialized." + " Remaining lifetime: " + SecondsToDays(GetRemainingTimeTilDespawn()));
 		SynchronizeValues();
@@ -158,7 +158,7 @@ modded class CarScript
 		}
 
 		if (!ctx.Read(m_LastInteractedWithUnixTime))
-			m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+			SetLastInteractedWithTimeToNow();
 		if (!ctx.Read(m_HadPlayerInteraction))
 			m_HadPlayerInteraction = false;
 		// if (!ctx.Read(m_OriginalOwner))
@@ -188,10 +188,21 @@ modded class CarScript
 			this.SetLifetime(g_Game.GetMCKConfig().Get_MaxLifetime());
 		};
 	}
-
+	int GetLastInteractedWithTime()
+	{
+		if(m_LastInteractedWithUnixTime <= 0)
+		{
+			SetLastInteractedWithTimeToNow();
+		}
+		return m_LastInteractedWithUnixTime;
+	}
+	void SetLastInteractedWithTimeToNow()
+	{
+		m_LastInteractedWithUnixTime = CF_Date.Now(false).GetTimestamp();
+	}
 	int GetElapsedTimeSinceInteraction()
 	{
-		return CF_Date.Now(false).GetTimestamp() - m_LastInteractedWithUnixTime;
+		return CF_Date.Now(false).GetTimestamp() - GetLastInteractedWithTime();
 	}
 
 	int GetRemainingTimeTilDespawn()
@@ -216,22 +227,22 @@ modded class CarScript
 		{
 			if(deltaInSeconds > g_Game.GetMCKConfig().Get_MaxLifetime())
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(GetLastInteractedWithTime()));
 				Delete();
 				return;
 			}
 			if(deltaInSeconds > g_Game.GetMCKConfig().Get_MaxLifetimeWithoutAnyPlayerInteraction() && !m_HadPlayerInteraction)
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(m_LastInteractedWithUnixTime));
+				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (" + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". Deleting car due to no player interaction. Last time refreshed: " + TimestampToString(GetLastInteractedWithTime()));
 				Delete();
 				return;
 			}
 		}
 	}
 
-	override bool CanDisplayAttachmentSlot(string slot_name)
+	override bool CanDisplayAttachmentSlot(int slot_id)
 	{
-		if (!super.CanDisplayAttachmentSlot(slot_name))
+		if (!super.CanDisplayAttachmentSlot(slot_id))
 			return false;
 
 		return !m_IsCKLocked;
