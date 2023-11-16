@@ -2,7 +2,7 @@ class ActionResetKeyIdCB : ActionContinuousBaseCB
 {
 	override void CreateActionComponent()
 	{
-		m_ActionData.m_ActionComponent = new CAContinuousTime(1);
+		m_ActionData.m_ActionComponent = new CAContinuousTime(10);
 	}
 };
 
@@ -36,9 +36,10 @@ class ActionResetKeyId: ActionLockUnlockCar
 		}    
 		
         MCK_ResetKey resetKey = MCK_ResetKey.Cast(item);
-		if (carScript && resetKey)
+        MCK_CarKey_Base carKey = MCK_CarKey_Base.Cast(item);
+		if (carScript && resetKey || carKey && carKey.m_MCKId == carScript.m_CarKeyId)
 		{
-			if(!carScript.m_HasCKAssigned)
+			if(!carScript.m_HasCKAssigned || !g_Game.GetMCKConfig().Get_CanPlayersResetKey())
 				return false;
 
 			return true;            
@@ -56,17 +57,15 @@ class ActionResetKeyId: ActionLockUnlockCar
 			carScript = CarScript.Cast(action_data.m_Target.GetParent());
 		}
 		if( carScript )
-		{
-			MCK_ResetKey resetKey = MCK_ResetKey.Cast(action_data.m_MainItem);            
-            if(resetKey)
-            {          
-                carScript.m_CarKeyId = 0;
-                carScript.m_HasCKAssigned = false;
-				carScript.SynchronizeValues();
-				carScript.ResetLifetime();           
-	            PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));     
-				m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") reset key for vehicle " + carScript.GetDisplayName() + " (" + carScript.m_CarScriptId + ")");
-            }
+		{          
+			carScript.ResetVehicle();
+			MCK_CarKey_Base carKey = MCK_CarKey_Base.Cast(action_data.m_MainItem);            
+            if(carKey)
+            {
+				carKey.ResetKey();
+			}
+			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));     
+			m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") reset key for vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
 		}
 	}    
 };

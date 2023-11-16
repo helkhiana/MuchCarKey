@@ -12,7 +12,7 @@ modded class ActionStopEngine
 				if (car && g_Game.GetMCKConfig().AreExtendedLogsActivated())
 				{					
 					PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-					m_MCKLogger.LogMCKActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") stopped " + car.GetDisplayName() + " (" + car.m_CarScriptId + ")");
+					m_MCKLogger.LogMCKActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") stopped " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")");
 				}					
 			}
 		}

@@ -1,8 +1,5 @@
 class MCK_Config
 {	
-	//old config path
-	static const string MODCONFIG_ROOT_FOLDER = "$profile:MCK_CarLockPickConfig/";
-    static const string CONFIG_PATH = MODCONFIG_ROOT_FOLDER + "CarLockPickConfig.json";
 	//new  config path
 	static const string CONFIG_ROOT = "$profile:MuchCarKey/";
     static const string FULLPATH = "$profile:MuchCarKey/MCK_Config.json";
@@ -19,6 +16,7 @@ class MCK_Config
 	private bool LifetimeMaintenanceEnabled;
 	private int MaxLifetime;
 	private int MaxLifetimeWithoutAnyPlayerInteraction;
+    private bool CanPlayersResetKey;
 
 	void MCK_Config()
 	{
@@ -32,22 +30,11 @@ class MCK_Config
 
         if (!FileExist(FULLPATH))
         {
-			if(FileExist(CONFIG_PATH))
-			{			
-				Print("[MCK_Config] '" + CONFIG_PATH + "' found, loading old config!");
-				JsonFileLoader<MCK_Config>.JsonLoadFile(CONFIG_PATH, this);
-				Print("[MCK_Config] deleting old config");
-				DeleteFile(CONFIG_PATH);
-				DeleteFile(MODCONFIG_ROOT_FOLDER);
-				Load();
-				return;
-
-			}
             Print("[MCK_Config] '" + FULLPATH + "' does NOT exist, creating default config!");
             Default();
             return; 
         }
-
+		CanPlayersResetKey = false;
         Load();
     }
 
@@ -62,11 +49,12 @@ class MCK_Config
 	{
 		if(!version)
 		{
-			version = 1;
+			version = 2;
 			ActivateExtendedLogs = true;
 			LifetimeMaintenanceEnabled = true;
 			MaxLifetime = 1296000;
 			MaxLifetimeWithoutAnyPlayerInteraction = 432000;
+			CanPlayersResetKey = true;
 			Save();
 		}
 	}
@@ -86,12 +74,18 @@ class MCK_Config
         TimeToPickLock = 200;
         ToolDamage = 50;
         CanPickCarLocks = false;
-		version = 1;
+		version = 2;
 		ActivateExtendedLogs = true;
 		LifetimeMaintenanceEnabled = true;
 		MaxLifetime = 1296000;
 		MaxLifetimeWithoutAnyPlayerInteraction = 432000;
+		CanPlayersResetKey = true;
 		Save();
+	}
+
+	int GetVersion()
+	{
+		return version;
 	}
 
 	float Get_ChanceToPickLock()
@@ -151,5 +145,50 @@ class MCK_Config
 	int Get_MaxLifetimeWithoutAnyPlayerInteraction()
 	{
 		return MaxLifetimeWithoutAnyPlayerInteraction;
+	}
+	
+	bool Get_CanPlayersResetKey()
+	{
+		return CanPlayersResetKey;
+	}
+
+	int GetNextVehicleStoreID() 
+	{
+		string path = "\\vehicleid.bin";
+		int storeId = LoadStoreID(path);
+		storeId++;
+		SaveStoreID(storeId, path);
+		return storeId;
+	}
+	
+	int GetNextCarKeyStoreID() 
+	{
+		string path = "\\carkeyid.bin";
+		int storeId = LoadStoreID(path);
+		storeId++;
+		SaveStoreID(storeId, path);
+		return storeId;
+	}
+
+	void SaveStoreID(int storeID, string path) 
+	{
+		FileSerializer fs = new FileSerializer();
+		fs.Open(CONFIG_ROOT + path, FileMode.WRITE);
+		fs.Write(storeID);
+		fs.Close();
+	}
+
+	int LoadStoreID(string path) 
+	{
+		int storeID = 0;
+		FileSerializer fs = new FileSerializer();
+		if (!fs.Open(CONFIG_ROOT + path, FileMode.READ)) 
+		{
+			SaveStoreID(storeID, path);
+			return storeID;
+		}
+		fs.Read(storeID);
+		fs.Close();
+		return storeID;
 	}
 };

@@ -68,7 +68,7 @@ class ActionGetInfoKey: ActionLockUnlockCar
 		SendMCKMessageToClient(player, "Vehicle: " + target);
 		SendMCKMessageToClient(player, "Vehicle key id: " + target.m_CarKeyId);
 		SendMCKMessageToClient(player, "Vehicle id: " + target.m_CarScriptId);
-		//SendMCKMessageToClient(player, "Vehicle original owner: " + target.m_OriginalOwner);
+		SendMCKMessageToClient(player, "Vehicle original owner: " + target.m_OriginalOwnerName);
 		SendMCKMessageToClient(player, "Last time interacted: " + TimestampToString(target.GetLastInteractedWithTime()));
 		SendMCKMessageToClient(player, "Remaining lifetime: " + SecondsToDays(target.GetRemainingTimeTilDespawn()));
 		//SendMCKMessageToClient(player, "Max lifetime from types: " + SecondsToDays(target.GetLifetimeMax()));

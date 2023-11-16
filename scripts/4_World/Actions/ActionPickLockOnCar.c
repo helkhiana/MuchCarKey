@@ -77,12 +77,10 @@ class ActionPickLockOnCar : ActionLockUnlockCar
             if (chanceToPickLock == -1 || roll < chanceToPickLock)
             {
                 carScript.m_IsCKLocked = false;
-                carScript.m_CarKeyId = 0;
-                carScript.m_HasCKAssigned = false;
-                carScript.SynchronizeValues();
+			    carScript.ResetVehicle();
                 
 	            PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-                m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") picked lock for vehicle " + carScript.GetDisplayName() + " (" + carScript.m_CarScriptId + ")");
+                m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") picked lock for vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
             }
             action_data.m_MainItem.DecreaseHealth(toolDamage, false);
         }
