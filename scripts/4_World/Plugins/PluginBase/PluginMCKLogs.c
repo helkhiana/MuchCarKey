@@ -7,37 +7,31 @@ class PluginMCKLogs extends PluginBase
 	
 	int year, month, day, hour, minute, second;
 	string sYear, sMonth, sDay, sHour, sMinute, sSecond, currentDateTime, currentTime;
-	
-	void PluginMCKLogs()
-	{
-		Print("Init: PluginMCKLogs");
 		
-		if (!FileExist(m_profileFolder))
-			MakeDirectory(m_profileFolder);	
-
-		InitiateLogs(m_MCKLogName);
-	}
-	
-	void ~PluginMCKLogs()
+	override void OnInit()
 	{
-		Print("~PluginMCKLogs Closed");
 		if (GetGame().IsServer())
-		{
-			// Close Log File
-			CloseFile(m_MCKLogFile);
+		{		
+			Print("Init: PluginMCKLogs");
+			//setting currentDateTime
+			SetCurrentTime();
+			string currentFileName = m_profileFolder + "/" + m_MCKLogName + currentDateTime + ".log";
+		
+			// Create New Log
+			if (CreateNewLogFile(currentFileName))
+			{				
+				m_LogEnabled = true;
+			}
 		}
 	}
 
-	void InitiateLogs(string logFileName)
+	override void OnDestroy()
 	{
-		//setting currentDateTime
-		SetCurrentTime();
-		string currentFileName = m_profileFolder + "/" + logFileName + currentDateTime + ".log";
-	
-		// Create New Log
-		if (this.CreateNewLogFile(currentFileName))
-		{				
-			m_LogEnabled = true;
+		if (GetGame().IsServer())
+		{
+			// Close Log File
+			Print("~PluginMCKLogs Closed");
+			CloseFile(m_MCKLogFile);
 		}
 	}
 	
@@ -103,7 +97,7 @@ class PluginMCKLogs extends PluginBase
 	
 	void LogMCKActivity(string text)
 	{
-		if (GetGame().IsMultiplayer())
+		if (GetGame().IsServer() && m_LogEnabled)
 		{
 			SetCurrentTime();			
 			FPrintln(m_MCKLogFile, currentTime + text);

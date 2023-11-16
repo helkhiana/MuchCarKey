@@ -2,10 +2,10 @@ modded class PluginManager
 {
 	override void Init()
 	{
-		if (GetGame().IsServer() || !GetGame().IsMultiplayer())
+		super.Init();
+		if (GetGame().IsServer())
 		{
 			RegisterPlugin( "PluginMCKLogs", false, true);
 		}		
-		super.Init();
 	}
 };

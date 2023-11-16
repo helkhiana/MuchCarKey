@@ -7,6 +7,12 @@ class MCK_CarKey_Base : ItemBase
         RegisterNetSyncVariableInt( "m_MCKId", 0, int.MAX - 1);
     }
 
+	void ResetKey()
+	{
+		m_MCKId = 0;
+        Synchronize();
+	}
+
     override void OnStoreSave( ParamsWriteContext ctx )
 	{   
 		super.OnStoreSave( ctx );
@@ -28,7 +34,14 @@ class MCK_CarKey_Base : ItemBase
 
     int GenerateNewID()
     {      
-        return Math.RandomIntInclusive(1, int.MAX - 1);
+		if(g_Game.GetMCKConfig().GetVersion() >= 2)
+		{
+			return g_Game.GetMCKConfig().GetNextCarKeyStoreID();
+		}
+		else
+		{
+        	return Math.RandomIntInclusive(1, int.MAX - 1);
+		}
     }
 
     void SetNewMCKId(int newid)
@@ -67,6 +80,7 @@ class MCK_CarKey_Base : ItemBase
 
 		AddAction(ActionUnlockCar);
         AddAction(ActionLockCar);
+        AddAction(ActionResetKeyId);
         AddAction(ActionAssignNewKey);
         AddAction(ActionCraftDuplicateKey);
 	}
