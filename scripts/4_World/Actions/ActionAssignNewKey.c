@@ -16,7 +16,7 @@ class ActionAssignNewKey: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "Assign new key";
+		return "#mck_action_assign";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -68,7 +68,7 @@ class ActionAssignNewKey: ActionLockUnlockCar
                 carScript.m_HasCKAssigned = true;
 				carScript.m_OriginalOwnerName = player.GetIdentity().GetName();
 				carScript.m_OriginalOwnerId = player.GetIdentity().GetPlainId();
-				carScript.SynchronizeValues(); 
+				carScript.SetSynchDirty(); 
 				carScript.ResetLifetime();
 				
 				PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));

@@ -65,8 +65,8 @@ class CfgVehicles
 	class MCK_CarKey_Base: Inventory_Base
 	{
 		scope=2;
-		displayName="Car Key";
-		descriptionShort="Key which can be assigned to a car. You can duplicate this key at a grinder.";
+		displayName="#mck_name_carkey";
+		descriptionShort="#mck_description_carkey";
 		model="\MuchCarKey\data\carkey.p3d";
 		rotationFlags=8;
 		weight=100;
@@ -154,7 +154,7 @@ class CfgVehicles
 	class MCK_CarKey_Blue: MCK_CarKey_Base
 	{
 		scope=2;
-		displayName="Blue Car Key";
+		displayName="Blue #mck_name_carkey";
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_co.paa",
@@ -165,7 +165,7 @@ class CfgVehicles
 	class MCK_CarKey_Green: MCK_CarKey_Base
 	{
 		scope=2;
-		displayName="Green Car Key";
+		displayName="Green #mck_name_carkey";
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_co.paa",
@@ -176,7 +176,7 @@ class CfgVehicles
 	class MCK_CarKey_Red: MCK_CarKey_Base
 	{
 		scope=2;
-		displayName="Red Car Key";
+		displayName="Red #mck_name_carkey";
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_co.paa",
@@ -187,7 +187,7 @@ class CfgVehicles
 	class MCK_CarKey_White: MCK_CarKey_Base
 	{
 		scope=2;
-		displayName="White Car Key";
+		displayName="White #mck_name_carkey";
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_co.paa",
@@ -198,7 +198,7 @@ class CfgVehicles
 	class MCK_CarKey_Yellow: MCK_CarKey_Base
 	{
 		scope=2;
-		displayName="Yellow Car Key";
+		displayName="Yellow #mck_name_carkey";
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_co.paa",
@@ -209,8 +209,8 @@ class CfgVehicles
 	class MCK_CarKeyTag_Base: Inventory_Base
 	{
 		scope=2;
-		displayName="Car Key Tag";
-		descriptionShort="This tag can be attached to a car key";
+		displayName="#mck_name_carkeytag";
+		descriptionShort="#mck_description_carkeytag";
 		model="\MuchCarKey\data\carkey_tag.p3d";
 		rotationFlags=17;
 		weight=100;
@@ -464,8 +464,8 @@ class CfgVehicles
     class MCK_MasterKey: Inventory_Base
     {
         scope=2;
-		displayName="Master Car Key";
-		descriptionShort="Only admins should have this. Locks and unlocks any car.";        
+		displayName="#mck_name_masterkey";
+		descriptionShort="#mck_description_masterkey";        
 		model="\MuchCarKey\data\fullcarkey.p3d";
 		rotationFlags=17;
 		weight=100;
@@ -501,8 +501,8 @@ class CfgVehicles
     class MCK_ResetKey: MCK_MasterKey
     {
         scope=2;
-		displayName="Reset Car Key";
-		descriptionShort="Only admins should have this. Resets the ids of cars.";        
+		displayName="#mck_name_resetkey";
+		descriptionShort="#mck_description_resetkey";        
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_resetkey_co.paa",
@@ -518,8 +518,8 @@ class CfgVehicles
     class MCK_InfoKey: MCK_MasterKey
     {
         scope=2;
-		displayName="Info Car Key";
-		descriptionShort="Only admins should have this. Gets IDs of the cars.";        
+		displayName="#mck_name_infokey";
+		descriptionShort="#mck_description_infokey";        
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\carkey_infokey_co.paa",

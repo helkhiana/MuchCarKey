@@ -7,7 +7,7 @@ class ActionLockCar: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "#lock_door";
+		return "#mck_action_lock";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -53,7 +53,7 @@ class ActionLockCar: ActionLockUnlockCar
 		if( carScript )
 		{
 			carScript.m_IsCKLocked = true;
-			carScript.SynchronizeValues();
+			carScript.SetSynchDirty();
 			carScript.ResetLifetime();
 			
 			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));

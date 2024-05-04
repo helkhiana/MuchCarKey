@@ -10,6 +10,7 @@ modded class CarScript
 	string m_OriginalOwnerName;
 	private bool m_Initialised;//client only
 	PluginMCKLogs m_MCKLogger;
+	bool m_DeletionInitialisedByMod;
 
 	void CarScript()
 	{
@@ -19,6 +20,7 @@ modded class CarScript
 		m_CarScriptId = 0;
 		m_LastInteractedWithUnixTime = -1;
 		m_HadPlayerInteraction = false;
+		m_DeletionInitialisedByMod = false;
 		m_OriginalOwnerId =  "";
 		m_OriginalOwnerName = "";
 		m_Initialised = false;
@@ -42,7 +44,7 @@ modded class CarScript
 		m_OriginalOwnerId =  "";
 		SetLastInteractedWithTimeToNow();
 		SetMCKLifetime();
-		SynchronizeValues();
+		SetSynchDirty();
 	}
 
 	void ResetLifetime()
@@ -95,6 +97,10 @@ modded class CarScript
 		super.EEDelete(parent);
 		if (GetGame().IsServer())
 		{
+			if(m_DeletionInitialisedByMod)
+			{
+				return;
+			}
 			m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") " + " is being deleted.");
 			if(GetLifetime() <= 0)
 			{
@@ -126,7 +132,7 @@ modded class CarScript
 			SetLastInteractedWithTimeToNow();
 		}
 		m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") initialized." + " Remaining lifetime: " + SecondsToDays(GetRemainingTimeTilDespawn()));
-		SynchronizeValues();
+		SetSynchDirty();
 		m_Initialised = true;
 	}
 
@@ -180,7 +186,7 @@ modded class CarScript
 		 		m_OriginalOwnerId = "";
 		}
 
-		SynchronizeValues();
+		SetSynchDirty();
 
 		return true;
 	}
@@ -262,12 +268,6 @@ modded class CarScript
 		return !m_IsCKLocked;
 	}
 
-	void SynchronizeValues()
-	{
-		if (GetGame().IsServer())
-			SetSynchDirty();
-	}
-
 	bool CheckOpenedDoors()
 	{
 		TStringArray attachmentNames = new TStringArray;
@@ -299,16 +299,6 @@ modded class CarScript
 		return false;
 	}
 
-	bool ShouldShowInv()
-	{
-		if (HasDoors())
-			return !m_IsCKLocked && CheckOpenedDoors();
-		else
-			return !m_IsCKLocked;
-
-		return false;
-	}
-
 	bool CanDoAction()
 	{
 		if (HasDoors())
@@ -321,6 +311,10 @@ modded class CarScript
 
 	override bool IsInventoryVisible()
 	{
-		return ShouldShowInv() && (GetGame().GetPlayer() && (!GetGame().GetPlayer().GetCommand_Vehicle() || GetGame().GetPlayer().GetCommand_Vehicle().GetTransport() == this));
+		if(!super.IsInventoryVisible())
+		{
+			return false;
+		}
+		return !m_IsCKLocked;
 	}
 };

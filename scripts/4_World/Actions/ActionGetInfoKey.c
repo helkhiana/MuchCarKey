@@ -16,7 +16,7 @@ class ActionGetInfoKey: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "Get Info";
+		return "#mck_action_getinfo";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -60,6 +60,26 @@ class ActionGetInfoKey: ActionLockUnlockCar
                 DisplayReport(action_data.m_Player, carScript);
             }
 		}
+
+	}
+
+	override void OnFinishProgressClient( ActionData action_data )
+	{	
+		PlayerBase player = action_data.m_Player;
+		CarScript carScript = CarScript.Cast(action_data.m_Target.GetObject());
+		if(!carScript)
+		{
+			carScript = CarScript.Cast(action_data.m_Target.GetParent());
+		}
+		if( carScript )
+		{
+			MCK_InfoKey infoKey = MCK_InfoKey.Cast(action_data.m_MainItem);            
+            if(infoKey)
+            {          
+				string clipboard = carScript.m_CarScriptId.ToString();
+				GetGame().CopyToClipboard(clipboard);
+            }
+		}
 	}
 
 	void DisplayReport(PlayerBase player, CarScript target)
@@ -69,6 +89,7 @@ class ActionGetInfoKey: ActionLockUnlockCar
 		SendMCKMessageToClient(player, "Vehicle key id: " + target.m_CarKeyId);
 		SendMCKMessageToClient(player, "Vehicle id: " + target.m_CarScriptId);
 		SendMCKMessageToClient(player, "Vehicle original owner: " + target.m_OriginalOwnerName);
+		SendMCKMessageToClient(player, "Vehicle original owner id: " + target.m_OriginalOwnerId);
 		SendMCKMessageToClient(player, "Last time interacted: " + TimestampToString(target.GetLastInteractedWithTime()));
 		SendMCKMessageToClient(player, "Remaining lifetime: " + SecondsToDays(target.GetRemainingTimeTilDespawn()));
 		//SendMCKMessageToClient(player, "Max lifetime from types: " + SecondsToDays(target.GetLifetimeMax()));

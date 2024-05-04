@@ -32,7 +32,7 @@ class ActionPickLockOnCar : ActionLockUnlockCar
 
     override string GetText()
     {
-        return "Pick Lock";
+        return "#mck_action_raid";
     }
 
     override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)

@@ -16,7 +16,7 @@ class ActionResetKeyId: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "Reset key";
+		return "#mck_action_resetkey";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -35,14 +35,24 @@ class ActionResetKeyId: ActionLockUnlockCar
 				return false;
 		}    
 		
-        MCK_ResetKey resetKey = MCK_ResetKey.Cast(item);
-        MCK_CarKey_Base carKey = MCK_CarKey_Base.Cast(item);
-		if (carScript && resetKey || carKey && carKey.m_MCKId == carScript.m_CarKeyId)
+		if (carScript)
 		{
-			if(!carScript.m_HasCKAssigned || !g_Game.GetMCKConfig().Get_CanPlayersResetKey())
-				return false;
-
-			return true;            
+        	MCK_ResetKey resetKey = MCK_ResetKey.Cast(item);
+			if(resetKey)
+			{
+				return true;
+			}
+			
+        	MCK_CarKey_Base carKey = MCK_CarKey_Base.Cast(item);
+			if(carKey && carKey.m_MCKId == carScript.m_CarKeyId)
+			{
+				if(!carScript.m_HasCKAssigned || !g_Game.GetMCKConfig().Get_CanPlayersResetKey())
+				{
+					return false;
+				}
+				return true;   
+			}
+         
 		}
 
         return false;

@@ -18,7 +18,7 @@ class ActionCraftCarKey: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "Craft car key";
+		return "#mck_action_craft";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )

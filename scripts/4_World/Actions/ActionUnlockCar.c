@@ -53,7 +53,7 @@ class ActionUnlockCar: ActionLockUnlockCar
 		if( carScript )
 		{
 			carScript.m_IsCKLocked = false;
-			carScript.SynchronizeValues();
+			carScript.SetSynchDirty();
 			carScript.ResetLifetime();		
 			
 			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));	

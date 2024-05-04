@@ -18,7 +18,7 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "Duplicate key";
+		return "#mck_action_duplicate";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -48,7 +48,7 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
 		if(carKey)
 		{
 			int mck_id = carKey.m_MCKId;
-			carKey.DecreaseHealth( 50, false );
+			//carKey.DecreaseHealth( 50, false );
 			MCK_CarKey_Base duplicateKey = MCK_CarKey_Base.Cast( GetGame().CreateObject(carKey.GetType(), player.GetPosition()) );			
 			duplicateKey.SetNewMCKId(mck_id);
 			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));

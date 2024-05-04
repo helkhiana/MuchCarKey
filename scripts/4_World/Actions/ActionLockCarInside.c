@@ -24,7 +24,7 @@ class ActionLockCarInside: ActionLockUnlockCar
 		
 	override string GetText()
 	{
-		return "#lock_door";
+		return "#mck_action_lock";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -49,7 +49,7 @@ class ActionLockCarInside: ActionLockUnlockCar
 		if( carScript )
 		{
 			carScript.m_IsCKLocked = true;
-			carScript.SynchronizeValues();
+			carScript.SetSynchDirty();
 			
 			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
 			m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") locked vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ") from inside");
