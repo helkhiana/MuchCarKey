@@ -1,0 +1,16 @@
+MetaFileClass {
+ Name "{6BE261B97A98A812}MuchCarKey/data/logo/mck_logo.edds"
+ Author "desktop-c8ct5up"
+ ChangeDate -1589464924
+ Configurations {
+  PAAResourceClass PC {
+   SourceFile "mck_logo.paa"
+  }
+  PAAResourceClass XBOX_ONE : PC {
+  }
+  PAAResourceClass PS4 : PC {
+  }
+  PAAResourceClass LINUX : PC {
+  }
+ }
+}

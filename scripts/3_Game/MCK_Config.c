@@ -4,19 +4,20 @@ class MCK_Config
 	static const string CONFIG_ROOT = "$profile:MuchCarKey/";
     static const string FULLPATH = "$profile:MuchCarKey/MCK_Config.json";
 
-	private int version;
-    private bool CanCraftKey;
-    private bool CanPickCarLocks;
-	private string RaidTool;
-	private ref array<string> RaidTools;
-	private int ToolDamage;
-	private float ChanceToPickLock;
-	private float TimeToPickLock;
-    private bool ActivateExtendedLogs;
-	private bool LifetimeMaintenanceEnabled;
-	private int MaxLifetime;
-	private int MaxLifetimeWithoutAnyPlayerInteraction;
-    private bool CanPlayersResetKey;
+	private int version = 3;
+    private bool CanCraftKey = true;
+    private bool CanPickCarLocks = false;
+	private string RaidTool = "Lockpick";
+	private ref array<string> RaidTools = { "Lockpick" };
+	private int ToolDamage = 50;
+	private float ChanceToPickLock = -1;
+	private float TimeToPickLock = 200;
+    private bool ActivateExtendedLogs = true;
+	private bool LifetimeMaintenanceEnabled = false;
+	private int MaxLifetime = 1296000;
+	private int MaxLifetimeWithoutAnyPlayerInteraction = 432000;
+    private bool CanPlayersResetKey = false;
+    private bool HideInventoryWhenDoorsClosed = false;
 
 	void MCK_Config()
 	{
@@ -31,7 +32,7 @@ class MCK_Config
         if (!FileExist(FULLPATH))
         {
             Print("[MCK_Config] '" + FULLPATH + "' does NOT exist, creating default config!");
-            Default();
+            Save();
             return; 
         }
 		CanPlayersResetKey = false;
@@ -44,17 +45,17 @@ class MCK_Config
 		JsonFileLoader<MCK_Config>.JsonLoadFile(FULLPATH, this);
 		VersionChecker();
     }
+	int DesiredVersion()
+	{
+		return 3;
+	}
 
 	void VersionChecker()
 	{
-		if(!version)
+		if(version != DesiredVersion())
 		{
-			version = 2;
-			ActivateExtendedLogs = true;
-			LifetimeMaintenanceEnabled = true;
-			MaxLifetime = 1296000;
-			MaxLifetimeWithoutAnyPlayerInteraction = 432000;
-			CanPlayersResetKey = true;
+			version = DesiredVersion();
+			HideInventoryWhenDoorsClosed = false;
 			Save();
 		}
 	}
@@ -63,25 +64,6 @@ class MCK_Config
     {
         JsonFileLoader<MCK_Config>.JsonSaveFile(FULLPATH, this);
     }
-
-	protected void Default()
-    {
-		CanCraftKey = true;
-        RaidTool = "Lockpick";
-        RaidTools = new array<string>;
-		RaidTools.Insert(RaidTool);
-		ChanceToPickLock = -1;
-        TimeToPickLock = 200;
-        ToolDamage = 50;
-        CanPickCarLocks = false;
-		version = 2;
-		ActivateExtendedLogs = true;
-		LifetimeMaintenanceEnabled = true;
-		MaxLifetime = 1296000;
-		MaxLifetimeWithoutAnyPlayerInteraction = 432000;
-		CanPlayersResetKey = true;
-		Save();
-	}
 
 	int GetVersion()
 	{
@@ -151,6 +133,12 @@ class MCK_Config
 	{
 		return CanPlayersResetKey;
 	}
+	
+	bool Get_HideInventory()
+	{
+		return HideInventoryWhenDoorsClosed;
+	}
+
 
 	int GetNextVehicleStoreID() 
 	{

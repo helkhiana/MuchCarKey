@@ -267,6 +267,13 @@ modded class CarScript
 
 		return !m_IsCKLocked;
 	}
+	
+	//Don't use this. Use SetSynchDirty(); directly
+	void SynchronizeValues()
+	{
+		if (GetGame().IsServer())
+			SetSynchDirty();
+	}
 
 	bool CheckOpenedDoors()
 	{
@@ -309,12 +316,27 @@ modded class CarScript
 		return false;
 	}
 
+	bool ShouldShowInv()
+	{
+		if (HasDoors())
+			return !m_IsCKLocked && CheckOpenedDoors();
+		else
+			return !m_IsCKLocked;
+
+		return false;
+	}
+
 	override bool IsInventoryVisible()
 	{
-		if(!super.IsInventoryVisible())
+		bool superIsVisible = super.IsInventoryVisible();
+		if(!g_Game.GetMCKConfig().Get_HideInventory())
 		{
-			return false;
+			if(!superIsVisible)
+			{
+				return false;
+			}
+			return !m_IsCKLocked;
 		}
-		return !m_IsCKLocked;
+		return ShouldShowInv() && superIsVisible;
 	}
 };

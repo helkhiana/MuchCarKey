@@ -206,6 +206,26 @@ class CfgVehicles
 		};
 	};
 	
+	class MCK_CarKey_Purple: MCK_CarKey_Base
+	{
+		scope=2;
+		displayName="Purple #mck_name_carkey";
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\carkey_co.paa",
+			"MuchCarKey\data\key_variants\key_purple_co.paa"
+		};
+	};
+	class MCK_CarKey_Pink: MCK_CarKey_Base
+	{
+		scope=2;
+		displayName="Pink #mck_name_carkey";
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\carkey_co.paa",
+			"MuchCarKey\data\key_variants\key_pink_co.paa"
+		};
+	};
 	class MCK_CarKeyTag_Base: Inventory_Base
 	{
 		scope=2;
@@ -458,6 +478,24 @@ class CfgVehicles
 		hiddenSelectionsTextures[]=
 		{
 			"MuchCarKey\data\tag_variants\tag_yellow_co.paa"
+		};
+	};
+	class MCK_CarKeyTag_Purple: MCK_CarKeyTag_Base
+	{
+		scope=2;
+		displayName="Purple Tag";
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\key_variants\key_purple_co.paa"
+		};
+	};
+	class MCK_CarKeyTag_Pink: MCK_CarKeyTag_Base
+	{
+		scope=2;
+		displayName="Pink Tag";
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\key_variants\key_pink_co.paa"
 		};
 	};
 

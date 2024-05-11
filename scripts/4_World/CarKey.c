@@ -103,6 +103,8 @@ class MCK_CarKey_Green: MCK_CarKey_Base{};
 class MCK_CarKey_Red: MCK_CarKey_Base{};
 class MCK_CarKey_White: MCK_CarKey_Base{};
 class MCK_CarKey_Yellow: MCK_CarKey_Base{};
+class MCK_CarKey_Purple: MCK_CarKey_Base{};
+class MCK_CarKey_Pink: MCK_CarKey_Base{};
 
 class MCK_MasterKey : ItemBase 
 {
