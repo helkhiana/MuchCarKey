@@ -1,3 +1,4 @@
+#ifdef SERVER	
 modded class ActionGetInTransport: ActionBase
 {
 	override void OnEndServer( ActionData action_data )
@@ -30,10 +31,10 @@ modded class ActionGetInTransport: ActionBase
 							break;
 					}
 					
-					PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-					m_MCKLogger.LogMCKActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") entered in vehicle " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")" + " on " + position);
+					MCK_LogActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") entered in vehicle " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")" + " on " + position);
 				}
 			}
 		}
 	}
 };
+#endif

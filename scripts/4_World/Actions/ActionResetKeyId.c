@@ -74,8 +74,7 @@ class ActionResetKeyId: ActionLockUnlockCar
             {
 				carKey.ResetKey();
 			}
-			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));     
-			m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") reset key for vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
+			MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") reset key for vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
 		}
 	}    
 };

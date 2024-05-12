@@ -98,8 +98,7 @@ class ActionGetInfoKey: ActionLockUnlockCar
 	void SendMCKMessageToClient(Object reciever, string message)
 	{
 		//Printing to server too
-		PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-		m_MCKLogger.LogMCKActivity(message);
+		MCK_LogActivity(message);
 		PlayerBase man;
 		if (GetGame().IsServer() && Class.CastTo(man, reciever) && reciever.IsAlive() && message != "")
 		{

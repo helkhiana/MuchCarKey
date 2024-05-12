@@ -1,3 +1,4 @@
+#ifdef SERVER	
 modded class ActionDetach: ActionInteractBase
 {
 	override void OnExecuteServer( ActionData action_data )
@@ -10,9 +11,9 @@ modded class ActionDetach: ActionInteractBase
 			CarScript car = CarScript.Cast(action_data.m_Target.GetParent());
 			if (car && g_Game.GetMCKConfig().AreExtendedLogsActivated())
 			{				
-				PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-				m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") detached item=" + Object.GetDebugName(target) + " from vehicle " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")");
+				MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") detached item=" + Object.GetDebugName(target) + " from vehicle " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")");
 			}				
 		}
 	}
 };
+#endif

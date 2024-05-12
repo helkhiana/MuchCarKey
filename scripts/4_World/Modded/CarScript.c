@@ -9,7 +9,6 @@ modded class CarScript
 	string m_OriginalOwnerId;
 	string m_OriginalOwnerName;
 	private bool m_Initialised;//client only
-	PluginMCKLogs m_MCKLogger;
 	bool m_DeletionInitialisedByMod;
 
 	void CarScript()
@@ -28,10 +27,6 @@ modded class CarScript
 		RegisterNetSyncVariableBool("m_HasCKAssigned");
 		RegisterNetSyncVariableInt("m_CarKeyId", int.MIN, int.MAX - 1);
 		RegisterNetSyncVariableInt("m_CarScriptId", int.MIN, int.MAX - 1);
-		if(GetGame().IsServer())
-		{
-			m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-		}
 	}  
 
 	void ResetVehicle()
@@ -86,7 +81,7 @@ modded class CarScript
 						killerString = entity.ToString();
 					}
 				}
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") " + " has been destroyed by: " + killerString);
+				MCK_LogActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") " + " has been destroyed by: " + killerString);
 			}
 		}
 		super.EEKilled(killer);
@@ -101,10 +96,10 @@ modded class CarScript
 			{
 				return;
 			}
-			m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") " + " is being deleted.");
+			MCK_LogActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") " + " is being deleted.");
 			if(GetLifetime() <= 0)
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") Remaining DB lifetime: " + SecondsToDays(this.GetLifetime()) + ". This happened due to lifetime from types running out.");
+				MCK_LogActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") Remaining DB lifetime: " + SecondsToDays(this.GetLifetime()) + ". This happened due to lifetime from types running out.");
 			}
 		}
 	}
@@ -131,7 +126,7 @@ modded class CarScript
 			}		
 			SetLastInteractedWithTimeToNow();
 		}
-		m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") initialized." + " Remaining lifetime: " + SecondsToDays(GetRemainingTimeTilDespawn()));
+		MCK_LogActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + ") initialized." + " Remaining lifetime: " + SecondsToDays(GetRemainingTimeTilDespawn()));
 		SetSynchDirty();
 		m_Initialised = true;
 	}
@@ -245,7 +240,7 @@ modded class CarScript
 			bool expiredDueToMaxLifetimeRunningOut = deltaInSeconds > g_Game.GetMCKConfig().Get_MaxLifetime();
 			if(expiredDueToNoPlayerInteraction || expiredDueToMaxLifetimeRunningOut)
 			{
-				m_MCKLogger.LogMCKActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". MCK is deleting car due to no player interaction. Last time refreshed: " + TimestampToString(GetLastInteractedWithTime()));
+				MCK_LogActivity(GetDisplayName() + " (ID: " + m_CarScriptId + " - pos " + GetPosition() + "). Time elapsed since last interaction was " + SecondsToDays(deltaInSeconds) + ". MCK is deleting car due to no player interaction. Last time refreshed: " + TimestampToString(GetLastInteractedWithTime()));
 				Delete();
 				return;
 			}

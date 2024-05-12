@@ -1,3 +1,4 @@
+#ifdef SERVER
 modded class ActionStopEngine
 {
 	override void OnEndServer(ActionData action_data)
@@ -11,10 +12,10 @@ modded class ActionStopEngine
 				CarScript car = CarScript.Cast(vehCommand.GetTransport());
 				if (car && g_Game.GetMCKConfig().AreExtendedLogsActivated())
 				{					
-					PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-					m_MCKLogger.LogMCKActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") stopped " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")");
+					MCK_LogActivity("Player " + action_data.m_Player.GetIdentity().GetName() + " (" + action_data.m_Player.GetPosition() + " steam64id=" + action_data.m_Player.GetIdentity().GetPlainId() + ") stopped " + car.GetDisplayName() + " (ID: " + car.m_CarScriptId + ")");
 				}					
 			}
 		}
     }
 };
+#endif

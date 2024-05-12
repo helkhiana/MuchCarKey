@@ -3,9 +3,8 @@ modded class PluginManager
 	override void Init()
 	{
 		super.Init();
-		if (GetGame().IsServer())
-		{
+		#ifdef SERVER	
 			RegisterPlugin( "PluginMCKLogs", false, true);
-		}		
+		#endif
 	}
 };

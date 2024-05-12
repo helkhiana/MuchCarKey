@@ -1,13 +1,15 @@
+
 class PluginMCKLogs extends PluginBase
 {
 	bool			m_LogEnabled	= false;
 	FileHandle		m_MCKLogFile;
-	string			m_profileFolder		= "$profile:";
-	string			m_MCKLogName 			= "MCKActivity";
+	string			m_profileFolder = "$profile:";
+	string			m_MCKLogName	= "MCKActivity";
 	
 	int year, month, day, hour, minute, second;
 	string sYear, sMonth, sDay, sHour, sMinute, sSecond, currentDateTime, currentTime;
-		
+
+#ifdef SERVER
 	override void OnInit()
 	{
 		if (GetGame().IsServer())
@@ -94,13 +96,27 @@ class PluginMCKLogs extends PluginBase
 		currentDateTime = "_" + sYear + "-" + sMonth + "-" + sDay + "_" + sHour + "-" + sMinute + "-" + sSecond;
 		currentTime = sHour + ":" + sMinute + ":" + sSecond + " | ";
 	}
-	
+
+#endif	
 	void LogMCKActivity(string text)
 	{
+		#ifdef SERVER
 		if (GetGame().IsServer() && m_LogEnabled)
 		{
 			SetCurrentTime();			
 			FPrintln(m_MCKLogFile, currentTime + text);
 		}
+		#endif	
 	}
 };
+
+static void MCK_LogActivity(string message)
+{	
+	#ifdef SERVER
+	PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
+	if(m_MCKLogger)
+	{					
+		m_MCKLogger.LogMCKActivity(message);
+	}
+	#endif	
+}

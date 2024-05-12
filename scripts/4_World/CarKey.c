@@ -108,7 +108,6 @@ class MCK_CarKey_Pink: MCK_CarKey_Base{};
 
 class MCK_MasterKey : ItemBase 
 {
-
     override void SetActions()
 	{
 		super.SetActions();
@@ -121,7 +120,6 @@ class MCK_MasterKey : ItemBase
 
 class MCK_ResetKey : ItemBase 
 {
-
     override void SetActions()
 	{
 		super.SetActions();
@@ -131,7 +129,6 @@ class MCK_ResetKey : ItemBase
 
 class MCK_InfoKey : ItemBase 
 {
-
     override void SetActions()
 	{
 		super.SetActions();

@@ -51,8 +51,7 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
 			//carKey.DecreaseHealth( 50, false );
 			MCK_CarKey_Base duplicateKey = MCK_CarKey_Base.Cast( GetGame().CreateObject(carKey.GetType(), player.GetPosition()) );			
 			duplicateKey.SetNewMCKId(mck_id);
-			PluginMCKLogs m_MCKLogger = PluginMCKLogs.Cast(GetPlugin(PluginMCKLogs));
-			m_MCKLogger.LogMCKActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") duplicated key (ID: " + mck_id + " )");
+			MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") duplicated key (ID: " + mck_id + " )");
 		}
 	}    
 };
