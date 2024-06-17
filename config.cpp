@@ -56,6 +56,7 @@ class CfgVehicles
 {
 	class Inventory_Base;
     class HouseNoDestruct;
+	class Container_Base;
 	class MCK_KeyGrinder: HouseNoDestruct
 	{
 		scope = 1;
@@ -569,6 +570,86 @@ class CfgVehicles
 			"MuchCarKey\data\carkey_tag.rvmat"
 		};
     };
+
+	class MCK_KeyPouch: Container_Base
+	{
+		scope = 2;
+		displayName = "#mck_name_keypouch";
+		descriptionShort = "#mck_description_keypouch";
+		model = "\MuchCarKey\data\key_pouch\keypouch.p3d";
+		rotationFlags=1;
+		weight = 130;
+		itemSize[] = {3,2};
+		itemsCargoSize[] = {4,3};
+		canBeDigged = 0;
+		allowOwnedCargoManipulation = 1;    
+		hiddenSelections[]=
+		{
+			"all"
+		};    
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\key_pouch\keypouch_co.paa"
+		};
+		hiddenSelectionsMaterials[]=
+		{
+			"MuchCarKey\data\key_pouch\keypouch.rvmat"
+		};
+		class DamageSystem
+		{
+			class GlobalHealth
+			{
+				class Health
+				{
+					hitpoints=100;
+					healthLevels[]=
+					{
+						{
+							1.0,
+							{
+								"MuchCarKey\data\key_pouch\keypouch.rvmat"
+							}
+						},						
+						{
+							0.69999999,
+							{
+								"MuchCarKey\data\key_pouch\keypouch.rvmat"
+							}
+						},						
+						{
+							0.5,							
+							{
+								"MuchCarKey\data\key_pouch\keypouch_damage.rvmat"
+							}
+						},						
+						{
+							0.30000001,
+							{
+								"MuchCarKey\data\key_pouch\keypouch_damage.rvmat"
+							}
+						},						
+						{
+							0.0,							
+							{
+								"MuchCarKey\data\key_pouch\keypouch_destruct.rvmat"
+							}
+						}
+					};
+				};
+			};
+		};
+	};
+
+	class MCK_KeyPouch_ADMIN: MCK_KeyPouch
+	{
+		scope = 2;
+		displayName = "ADMIN #mck_name_keypouch";
+		descriptionShort = "#mck_description_keypouch This pouch is meant for admins to store their admin keys.";  
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\key_pouch\keypouch_red_co.paa"
+		};
+	};
 };
 
 class CfgSlots

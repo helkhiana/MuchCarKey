@@ -4,20 +4,21 @@ class MCK_Config
 	static const string CONFIG_ROOT = "$profile:MuchCarKey/";
     static const string FULLPATH = "$profile:MuchCarKey/MCK_Config.json";
 
-	private int version = 3;
+	private int version = 4;
     private bool CanCraftKey = true;
     private bool CanPickCarLocks = false;
-	private string RaidTool = "Lockpick";
 	private ref array<string> RaidTools = { "Lockpick" };
 	private int ToolDamage = 50;
 	private float ChanceToPickLock = -1;
 	private float TimeToPickLock = 200;
-    private bool ActivateExtendedLogs = true;
+	private bool RaidResetsKeyAssigned = true;
 	private bool LifetimeMaintenanceEnabled = false;
 	private int MaxLifetime = 1296000;
 	private int MaxLifetimeWithoutAnyPlayerInteraction = 432000;
     private bool CanPlayersResetKey = false;
     private bool HideInventoryWhenDoorsClosed = false;
+    bool DoFileLogs = true;
+    private bool ActivateExtendedLogs = true;
 
 	void MCK_Config()
 	{
@@ -45,9 +46,10 @@ class MCK_Config
 		JsonFileLoader<MCK_Config>.JsonLoadFile(FULLPATH, this);
 		VersionChecker();
     }
+	
 	int DesiredVersion()
 	{
-		return 3;
+		return 4;
 	}
 
 	void VersionChecker()
@@ -55,7 +57,8 @@ class MCK_Config
 		if(version != DesiredVersion())
 		{
 			version = DesiredVersion();
-			HideInventoryWhenDoorsClosed = false;
+			DoFileLogs = true;
+			RaidResetsKeyAssigned = true;
 			Save();
 		}
 	}
@@ -90,9 +93,9 @@ class MCK_Config
 		return CanPickCarLocks;
 	}
 
-	string Get_RaidTool()
+	bool Get_ShouldResetKeyOnRaid()
 	{
-		return RaidTool;
+		return RaidResetsKeyAssigned;
 	}
 
 	bool Get_CanCraftKey()
@@ -102,11 +105,6 @@ class MCK_Config
 
 	array<string> Get_RaidTools()
 	{
-		if(RaidTools.Count() < 1 && RaidTool && RaidTool != string.Empty)
-		{
-			RaidTools = new array<string>;
-			RaidTools.Insert(RaidTool);
-		}
 		return RaidTools;
 	}
 

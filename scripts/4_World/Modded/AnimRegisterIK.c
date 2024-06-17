@@ -6,5 +6,6 @@ modded class ModItemRegisterCallbacks
         pType.AddItemInHandsProfileIK("MCK_CarKey_Base", "dz/anims/workspaces/player/player_main/props/player_main_1h_keys.asi", pBehavior, "dz/anims/anm/player/ik/gear/handcuff_keys.anm");
         pType.AddItemInHandsProfileIK("MCK_CarKeyTag_Base", "dz/anims/workspaces/player/player_main/props/player_main_1h_keys.asi", pBehavior, "dz/anims/anm/player/ik/gear/handcuff_keys.anm");
         pType.AddItemInHandsProfileIK("MCK_MasterKey", "dz/anims/workspaces/player/player_main/props/player_main_1h_keys.asi", pBehavior, "dz/anims/anm/player/ik/gear/handcuff_keys.anm");
+        pType.AddItemInHandsProfileIK("MCK_KeyPouch", "dz/anims/workspaces/player/player_main/player_main_1h.asi", pBehavior, "dz/anims/anm/player/ik/gear/paper.anm");
     };
 };

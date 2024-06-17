@@ -2,6 +2,7 @@
 class PluginMCKLogs extends PluginBase
 {
 	bool			m_LogEnabled	= false;
+	bool			m_DoFileLogs	= false;
 	FileHandle		m_MCKLogFile;
 	string			m_profileFolder = "$profile:";
 	string			m_MCKLogName	= "MCKActivity";
@@ -15,14 +16,18 @@ class PluginMCKLogs extends PluginBase
 		if (GetGame().IsServer())
 		{		
 			Print("Init: PluginMCKLogs");
-			//setting currentDateTime
-			SetCurrentTime();
-			string currentFileName = m_profileFolder + "/" + m_MCKLogName + currentDateTime + ".log";
-		
-			// Create New Log
-			if (CreateNewLogFile(currentFileName))
-			{				
-				m_LogEnabled = true;
+			m_DoFileLogs = g_Game.GetMCKConfig().DoFileLogs;
+			if(m_DoFileLogs)
+			{
+				//setting currentDateTime
+				SetCurrentTime();
+				string currentFileName = m_profileFolder + "/" + m_MCKLogName + currentDateTime + ".log";
+			
+				// Create New Log
+				if (CreateNewLogFile(currentFileName))
+				{				
+					m_LogEnabled = true;
+				}				
 			}
 		}
 	}
@@ -33,7 +38,10 @@ class PluginMCKLogs extends PluginBase
 		{
 			// Close Log File
 			Print("~PluginMCKLogs Closed");
-			CloseFile(m_MCKLogFile);
+			if(m_DoFileLogs && m_LogEnabled)
+			{
+				CloseFile(m_MCKLogFile);
+			}
 		}
 	}
 	

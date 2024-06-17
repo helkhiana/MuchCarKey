@@ -1,6 +1,6 @@
 class MCK_CarKey_Base : ItemBase
 {
-    int m_MCKId = 0;
+    int m_MCKId = -1;
 
     void MCK_CarKey_Base()
     {        
@@ -9,7 +9,7 @@ class MCK_CarKey_Base : ItemBase
 
 	void ResetKey()
 	{
-		m_MCKId = 0;
+		m_MCKId = -1;
         Synchronize();
 	}
 
@@ -30,6 +30,18 @@ class MCK_CarKey_Base : ItemBase
         Synchronize();
 		
 		return true;
+	}
+	
+	override bool NameOverride(out string output)
+	{
+		if(m_MCKId > 0)
+		{
+			string DisplayName;
+			GetGame().ObjectGetDisplayName(this, DisplayName);	
+			output = DisplayName + " [Assigned]";
+			return true;
+		}
+		return super.NameOverride(output);
 	}
 
     int GenerateNewID()

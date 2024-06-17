@@ -13,12 +13,8 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONFB_INTERACT;
 		m_FullBody = true;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ERECT | DayZPlayerConstants.STANCEMASK_CROUCH;
-        m_CallbackClass = ActionCraftDuplicateKeyCB;        
-	}
-		
-	override string GetText()
-	{
-		return "#mck_action_duplicate";
+        m_CallbackClass = ActionCraftDuplicateKeyCB;
+		m_Text = "#mck_action_duplicate";
 	}
 
 	override bool ActionCondition( PlayerBase player, ActionTarget target, ItemBase item )
@@ -32,8 +28,19 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
         MCK_CarKey_Base carKey = MCK_CarKey_Base.Cast(item);
 		if (carKey)
 		{
+			m_Text = "#mck_action_duplicate";
 			if(carKey.m_MCKId <= 0)
-				return false;
+			{
+				m_Text = "#mck_action_duplicate_error"
+				if(GetGame().IsServer())
+				{
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}
 			
 			return true;            
 		}

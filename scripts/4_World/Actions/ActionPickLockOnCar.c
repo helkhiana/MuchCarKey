@@ -77,7 +77,11 @@ class ActionPickLockOnCar : ActionLockUnlockCar
             if (chanceToPickLock == -1 || roll < chanceToPickLock)
             {
                 carScript.m_IsCKLocked = false;
-			    carScript.ResetVehicle();
+                if(g_Game.GetMCKConfig().Get_ShouldResetKeyOnRaid())
+                {
+			        carScript.ResetVehicle();
+                }
+                carScript.SetSynchDirty();
                 
 	            MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") picked lock for vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
             }
