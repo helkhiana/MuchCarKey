@@ -1,10 +1,5 @@
 class ActionUnlockCar: ActionLockUnlockCar
-{	
-	void ActionUnlockCar()
-	{
-		ActionLockUnlockCar();
-	}
-		
+{			
 	override string GetText()
 	{
 		return "#unlock";
@@ -52,9 +47,7 @@ class ActionUnlockCar: ActionLockUnlockCar
 		}
 		if( carScript )
 		{
-			carScript.m_IsCKLocked = false;
-			carScript.SetSynchDirty();
-			carScript.ResetLifetime();		
+            carScript.UnlockVehicle();
 			
 			MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") unlocked vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ")");
 		}

@@ -62,7 +62,7 @@ class ActionAssignNewKey: ActionLockUnlockCar
             if(carKey)
             {
                 int mck_id = carKey.GenerateNewID();
-				carKey.SetNewMCKId(mck_id);                
+				carKey.SetNewMCKId(mck_id);
 
                 carScript.m_CarKeyId = mck_id;
                 carScript.m_HasCKAssigned = true;

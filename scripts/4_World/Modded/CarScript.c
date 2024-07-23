@@ -48,6 +48,20 @@ modded class CarScript
 		m_HadPlayerInteraction = true;
 		SetMCKLifetime();
 	}
+
+	void UnlockVehicle()
+	{
+		m_IsCKLocked = false;
+		SetSynchDirty();
+		ResetLifetime();
+	}
+
+	void LockVehicle()
+	{
+		m_IsCKLocked = true;
+		SetSynchDirty();
+		ResetLifetime();
+	}
 	
 	override void OnEngineStart()
 	{
@@ -302,7 +316,7 @@ modded class CarScript
 	}
 
 	bool CanDoAction()
-	{
+	{			
 		if (HasDoors())
 			return !m_IsCKLocked && !CheckOpenedDoors();
 		else

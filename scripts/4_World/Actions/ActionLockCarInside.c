@@ -2,8 +2,6 @@ class ActionLockCarInside: ActionLockUnlockCar
 {	
 	void ActionLockCarInside()
 	{
-		ActionLockUnlockCar();
-
 		m_FullBody = false;
 		m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_STARTENGINE;
 		m_StanceMask = DayZPlayerConstants.STANCEMASK_ALL;
@@ -48,9 +46,7 @@ class ActionLockCarInside: ActionLockUnlockCar
 		CarScript carScript = CarScript.Cast(action_data.m_Target.GetParent());
 		if( carScript )
 		{
-			carScript.m_IsCKLocked = true;
-			carScript.SetSynchDirty();
-			
+            carScript.LockVehicle();			
 			MCK_LogActivity("Player " + player.GetIdentity().GetName() + " (" + player.GetPosition() + " steam64id=" + player.GetIdentity().GetPlainId() + ") locked vehicle " + carScript.GetDisplayName() + " (ID: " + carScript.m_CarScriptId + ") from inside");
 		}
 	}

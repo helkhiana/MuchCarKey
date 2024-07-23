@@ -4,7 +4,7 @@ class MCK_CarKey_Base : ItemBase
 
     void MCK_CarKey_Base()
     {        
-        RegisterNetSyncVariableInt( "m_MCKId", 0, int.MAX - 1);
+        RegisterNetSyncVariableInt( "m_MCKId", -1, int.MAX - 1);
     }
 
 	void ResetKey()
@@ -25,7 +25,7 @@ class MCK_CarKey_Base : ItemBase
 			return false;
 
         if (!ctx.Read(m_MCKId))
-            m_MCKId = 0;
+            m_MCKId = -1;
 
         Synchronize();
 		
@@ -66,6 +66,11 @@ class MCK_CarKey_Base : ItemBase
     {
         return m_MCKId;
     }
+	
+	bool IsMCKAssigned()
+	{
+		return m_MCKId > 0;
+	}
 
     protected void Synchronize()
 	{

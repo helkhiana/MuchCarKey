@@ -227,6 +227,18 @@ class CfgVehicles
 			"MuchCarKey\data\key_variants\key_pink_co.paa"
 		};
 	};
+
+	class MCK_RemoteCarkey_Base: MCK_CarKey_Base
+	{
+		scope=2;
+		displayName="Remote Car Key";
+		hiddenSelectionsTextures[]=
+		{
+			"MuchCarKey\data\carkey_co.paa",
+			"MuchCarKey\data\key_variants\key_blue_co.paa"
+		};
+	};
+
 	class MCK_CarKeyTag_Base: Inventory_Base
 	{
 		scope=2;

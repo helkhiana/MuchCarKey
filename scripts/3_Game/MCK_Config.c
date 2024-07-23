@@ -1,10 +1,23 @@
+class MCK_EngineStartSettings
+{
+	bool CanStartUnassignedVehiclesWithoutKey = true;
+	bool CanStartWithoutKey = true;
+	bool CanStartWithKeyInHandOnly = false;
+	bool CanStartWithKeyInInventory = false;
+};
+
+class MCK_RemoteKeySettings
+{
+	ref array<string> VehiclesWithRemoteKey = { "CarScript" };
+};
+
 class MCK_Config
 {	
 	//new  config path
 	static const string CONFIG_ROOT = "$profile:MuchCarKey/";
     static const string FULLPATH = "$profile:MuchCarKey/MCK_Config.json";
 
-	private int version = 4;
+	private int version = 5;
     private bool CanCraftKey = true;
     private bool CanPickCarLocks = false;
 	private ref array<string> RaidTools = { "Lockpick" };
@@ -19,6 +32,8 @@ class MCK_Config
     private bool HideInventoryWhenDoorsClosed = false;
     bool DoFileLogs = true;
     private bool ActivateExtendedLogs = true;
+	private ref MCK_EngineStartSettings EngineStartSettings = new MCK_EngineStartSettings;
+	private ref MCK_RemoteKeySettings RemoteKeySettings = new MCK_RemoteKeySettings;
 
 	void MCK_Config()
 	{
@@ -49,7 +64,7 @@ class MCK_Config
 	
 	int DesiredVersion()
 	{
-		return 4;
+		return 5;
 	}
 
 	void VersionChecker()
@@ -57,8 +72,6 @@ class MCK_Config
 		if(version != DesiredVersion())
 		{
 			version = DesiredVersion();
-			DoFileLogs = true;
-			RaidResetsKeyAssigned = true;
 			Save();
 		}
 	}
@@ -166,7 +179,7 @@ class MCK_Config
 
 	int LoadStoreID(string path) 
 	{
-		int storeID = 0;
+		int storeID = 1;
 		FileSerializer fs = new FileSerializer();
 		if (!fs.Open(CONFIG_ROOT + path, FileMode.READ)) 
 		{
@@ -176,5 +189,15 @@ class MCK_Config
 		fs.Read(storeID);
 		fs.Close();
 		return storeID;
+	}
+
+	MCK_EngineStartSettings GetEngineStartSettings()
+	{
+		return EngineStartSettings;
+	}
+
+	MCK_RemoteKeySettings GetRemoteKeySettings()
+	{
+		return RemoteKeySettings;
 	}
 };

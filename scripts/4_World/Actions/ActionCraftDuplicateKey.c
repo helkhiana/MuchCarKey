@@ -29,7 +29,7 @@ class ActionCraftDuplicateKey: ActionLockUnlockCar
 		if (carKey)
 		{
 			m_Text = "#mck_action_duplicate";
-			if(carKey.m_MCKId <= 0)
+			if(!carKey.IsMCKAssigned())
 			{
 				m_Text = "#mck_action_duplicate_error"
 				if(GetGame().IsServer())

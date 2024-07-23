@@ -10,7 +10,6 @@ class ActionResetKeyId: ActionLockUnlockCar
 {	
 	void ActionResetKeyId()
 	{
-		ActionLockUnlockCar();
         m_CallbackClass = ActionResetKeyIdCB;        
 	}
 		
